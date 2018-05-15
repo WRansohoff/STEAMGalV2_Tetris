@@ -13,3 +13,7 @@ The onboard LED blinks on and off each game 'tick', which causes the current blo
 But there's no scoring, the game doesn't get faster as it progresses, there's no "next brick" display, etc. Just the basics.
 
 Currently, only the STM32F051K8 and STM32F031K6 are supported, but I hope to add the STM32F303K8 as well if time permits.
+
+Based off of a similar firmware for an earlier revision of the board; I should probably merge this with the other project and support multiple boards, but I don't know if it's worth continuing to use the monochrome displays for this sort of board; the lack of color is pretty limiting:
+
+https://github.com/WRansohoff/STEAMGal\_Tetris
