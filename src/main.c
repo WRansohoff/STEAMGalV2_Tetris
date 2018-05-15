@@ -9,7 +9,7 @@ int main(void) {
   game_state = GAME_STATE_MAIN_MENU;
   main_menu_state = MAIN_MENU_STATE_START;
   should_tick = 0;
-  state_changed = 0;
+  state_changed = 1;
   game_tick_prescaler = 1024;
   game_tick_period = 46785;
   cur_block_type = TBRICK_I;
