@@ -758,9 +758,9 @@ void draw_tetris_game(void) {
 
   // Draw the left sidebar (points, level)
   oled_draw_text(7, 4, "Pts\0", 1, 'S');
-  oled_draw_text(7, 14, "0\0", 1, 'S');
+  oled_draw_letter_i(7, 14, tetris_score, 1, 'S');
   oled_draw_text(7, 34, "Lvl\0", 1, 'S');
-  oled_draw_text(7, 44, "1\0", 1, 'S');
+  oled_draw_letter_i(7, 44, tetris_level, 1, 'S');
 }
 
 /*
@@ -895,6 +895,18 @@ void tetris_game_tick(void) {
       }
       if (!row_has_space) {
         tetris_clear_row(grid_iy);
+        // Also increment the 'score' variable by 1.
+        tetris_score += 1;
+        // Increment the level every 10 points.
+        if (tetris_score % 5 == 0 && tetris_level < 20) {
+          tetris_level += 1;
+          // When the level increments, make the game's main
+          // 'tick' timer faster.
+          stop_timer(TIM2);
+          game_tick_period = 46785 - (1024 * tetris_level);
+          start_timer(TIM2, game_tick_prescaler,
+                      game_tick_period, 1);
+        }
       }
       // If not, move to the next row.
       else {

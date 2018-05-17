@@ -91,6 +91,7 @@ inline void EXTI8_line_interrupt(void) {
     main_menu_state = MAIN_MENU_STATE_START;
     uled_state = 0;
     stop_timer(TIM2);
+    stop_timer(TIM16);
     reset_game_state();
     state_changed = 1;
   }
@@ -128,6 +129,7 @@ inline void EXTI9_line_interrupt(void) {
     main_menu_state = MAIN_MENU_STATE_START;
     uled_state = 0;
     stop_timer(TIM2);
+    stop_timer(TIM16);
     reset_game_state();
     state_changed = 1;
   }

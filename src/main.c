@@ -10,6 +10,8 @@ int main(void) {
   main_menu_state = MAIN_MENU_STATE_START;
   should_tick = 0;
   state_changed = 1;
+  tetris_score = 0;
+  tetris_level = 0;
   game_tick_prescaler = 1024;
   game_tick_period = 46785;
   cur_block_type = TBRICK_I;

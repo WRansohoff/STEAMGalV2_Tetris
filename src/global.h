@@ -33,6 +33,8 @@ volatile unsigned char uled_state;
 volatile uint8_t game_state;
 #define MAIN_MENU_STATE_START (0)
 volatile uint8_t main_menu_state;
+volatile uint32_t tetris_score;
+volatile uint8_t tetris_level;
 // Timer values for dropping the bricks faster
 // when the 'down' button is pressed.
 #define FAST_DROP_TIM_PRE     (2048)
