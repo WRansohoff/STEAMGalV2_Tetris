@@ -201,6 +201,7 @@ int main(void) {
     }
 
     if (state_changed) {
+      state_changed = 0;
       // Draw the current frame based on the game's state.
       if (game_state == GAME_STATE_MAIN_MENU) {
         draw_main_menu();
@@ -219,7 +220,6 @@ int main(void) {
       }
       // Communicate the framebuffer to the OLED screen.
       sspi_stream_framebuffer();
-      state_changed = 0;
     }
 
     // Set the onboard LED if the variable is set.
