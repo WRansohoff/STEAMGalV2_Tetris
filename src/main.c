@@ -33,8 +33,10 @@ int main(void) {
   RCC->AHBENR |= RCC_AHBENR_GPIOBEN;
   // Enable the TIM2 clock.
   RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
-  // Enable the TIM14 clock.
+  // Enable the TIM3 clock.
   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+  // Enable the TIM16 clock.
+  RCC->APB2ENR |= RCC_APB2ENR_TIM16EN;
   // Enable the I2C1 clock.
   RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
   // Enable the SYSCFG clock for hardware interrupts.
@@ -181,10 +183,12 @@ int main(void) {
     NVIC_EnableIRQ(EXTI9_5_IRQn);
   #endif
 
-  // Enable the NVIC interrupt for TIM2.
+  // Enable the NVIC interrupt for TIM2 and TIM16.
   // (Timer peripheral initialized and used elsewhere)
   NVIC_SetPriority(TIM2_IRQn, 0x03);
   NVIC_EnableIRQ(TIM2_IRQn);
+  NVIC_SetPriority(TIM16_IRQn, 0x03);
+  NVIC_EnableIRQ(TIM16_IRQn);
 
   while (1) {
     // Tick the game state if necessary.

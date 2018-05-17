@@ -17,6 +17,8 @@ inline void EXTI0_line_interrupt(void) {
   if (game_state == GAME_STATE_IN_GAME) {
     // Drop the block by one grid coordinate if able.
     should_tick = 1;
+    // Start the timer for continuing to drop bricks.
+    start_timer(TIM16, FAST_DROP_TIM_PRE, FAST_DROP_TIM_ARR, 1);
   }
 }
 
@@ -64,6 +66,7 @@ inline void EXTI7_line_interrupt(void) {
   else if (game_state == GAME_STATE_PAUSED) {
     game_state = GAME_STATE_IN_GAME;
     start_timer(TIM2, game_tick_prescaler, game_tick_period, 1);
+    state_changed = 1;
   }
 }
 
@@ -294,6 +297,23 @@ void TIM2_IRQ_handler(void) {
     uled_state = !uled_state;
     if (game_state == GAME_STATE_IN_GAME) {
       should_tick = 1;
+    }
+  }
+}
+
+void TIM16_IRQ_handler(void) {
+  // Handle a timer 'update' interrupt event
+  if (TIM16->SR & TIM_SR_UIF) {
+    TIM16->SR &= ~(TIM_SR_UIF);
+    if (game_state == GAME_STATE_IN_GAME) {
+      // Stop the timer if the 'Down' button is no longer pressed.
+      if (GPIOB->IDR & GPIO_IDR_0) {
+        stop_timer(TIM16);
+      }
+      // Otherwise, drop the block by one grid coordinate if able.
+      else {
+        should_tick = 1;
+      }
     }
   }
 }

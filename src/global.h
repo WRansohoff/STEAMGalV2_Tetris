@@ -33,6 +33,10 @@ volatile unsigned char uled_state;
 volatile uint8_t game_state;
 #define MAIN_MENU_STATE_START (0)
 volatile uint8_t main_menu_state;
+// Timer values for dropping the bricks faster
+// when the 'down' button is pressed.
+#define FAST_DROP_TIM_PRE     (2048)
+#define FAST_DROP_TIM_ARR     (4096)
 
 // Macro definitions for the Tetris grid/bricks.
 // (Note: The brick values should not be changed; the
@@ -75,8 +79,8 @@ static const uint16_t BRICKS[4][7] = {
 // in the V2 board and it'll make the math simple.
 volatile unsigned char tetris_grid[10][20];
 // Store more information about the game state.
-volatile unsigned char should_tick;
-volatile unsigned char state_changed;
+volatile uint8_t should_tick;
+volatile uint8_t state_changed;
 volatile uint16_t game_tick_prescaler;
 volatile uint16_t game_tick_period;
 // Store information about the current block.

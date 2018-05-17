@@ -25,6 +25,14 @@ void start_timer(TIM_TypeDef *TIMx,
     RCC->APB1RSTR |=  (RCC_APB1RSTR_TIM3RST);
     RCC->APB1RSTR &= ~(RCC_APB1RSTR_TIM3RST);
   }
+  else if (TIMx == TIM16) {
+    RCC->APB2RSTR |=  (RCC_APB2RSTR_TIM16RST);
+    RCC->APB2RSTR &= ~(RCC_APB2RSTR_TIM16RST);
+  }
+  else if (TIMx == TIM17) {
+    RCC->APB2RSTR |=  (RCC_APB2RSTR_TIM17RST);
+    RCC->APB2RSTR &= ~(RCC_APB2RSTR_TIM17RST);
+  }
   // Set clock division to 1; the timer triggers every N events.
   // Also set the counter to count up.
   TIMx->CR1  &= ~(TIM_CR1_DIR |
