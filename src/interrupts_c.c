@@ -123,6 +123,11 @@ inline void EXTI9_line_interrupt(void) {
       while (new_block_type == 7) { new_block_type = TIM3->CNT & 0x7; }
       cur_block_type = new_block_type;
       start_timer(TIM2, game_tick_prescaler, game_tick_period, 1);
+      // Set a PRNG-based next block type.
+      new_block_type = TIM3->CNT & 0x7;
+      // (Valid block types are between [0:6])
+      while (new_block_type == 7) { new_block_type = TIM3->CNT & 0x7; }
+      next_block_type = new_block_type;
       state_changed = 1;
     }
   }

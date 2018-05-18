@@ -17,6 +17,7 @@ int main(void) {
   game_tick_prescaler = 1024;
   game_tick_period = 46785;
   cur_block_type = TBRICK_I;
+  next_block_type = TBRICK_I;
   cur_block_x = 4;
   cur_block_y = -1;
   cur_block_r = 0;

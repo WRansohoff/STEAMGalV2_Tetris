@@ -761,6 +761,20 @@ void draw_tetris_game(void) {
   oled_draw_letter_i(7, 14, tetris_score, 1, 'S');
   oled_draw_text(7, 34, "Lvl\0", 1, 'S');
   oled_draw_letter_i(7, 44, tetris_level, 1, 'S');
+
+  // Draw the right sidebar ('next brick' display)
+  oled_draw_text(67, 8, "Next\0", 1, 'S');
+  oled_draw_text(64, 20, "Brick\0", 1, 'S');
+  // Draw the brick.
+  for (grid_ix = 0; grid_ix < 4; ++grid_ix) {
+    for (grid_iy = 0; grid_iy < 4; ++grid_iy) {
+      if (BRICKS[0][next_block_type] & (1 << (3-grid_ix+(3-grid_iy)*4))) {
+        // If the current square is occupied, draw it.
+        cell_col = next_block_type + 4;
+        oled_draw_rect(74 + (grid_ix * 4), 40 + (grid_iy * 4), 3, 3, 0, cell_col);
+      }
+    }
+  }
 }
 
 /*
@@ -925,7 +939,8 @@ void tetris_game_tick(void) {
     uint8_t new_block_type = TIM3->CNT & 0x7;
     // (Valid block types are between [0:6])
     while (new_block_type == 7) { new_block_type = TIM3->CNT & 0x7; }
-    cur_block_type = new_block_type;
+    cur_block_type = next_block_type;
+    next_block_type = new_block_type;
     cur_block_x = 4;
     cur_block_y = -1;
     cur_block_r = 0;

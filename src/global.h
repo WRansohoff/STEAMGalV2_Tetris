@@ -88,14 +88,15 @@ volatile uint8_t fast_tick_timer_on;
 volatile uint8_t left_right_fast_tick;
 volatile uint16_t game_tick_prescaler;
 volatile uint16_t game_tick_period;
-// Store information about the current block.
+// Store information about the current and next block.
 volatile uint8_t cur_block_type;
+volatile uint8_t next_block_type;
 volatile int8_t cur_block_x;
 volatile int8_t cur_block_y;
 volatile int8_t cur_block_r;
 
 // SSD1331 OLED information (96x64 pixels)
-// OLED logo colors.
+// OLED colors.
 #define OLED_BLK    (0x0000)
 #define OLED_LGRN   (0x8628)
 #define OLED_MGRN   (0x5488)
