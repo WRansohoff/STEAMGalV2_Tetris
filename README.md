@@ -4,13 +4,15 @@ This is firmware for a 'tetris' game on a V2 'STEAMGal' board driven by an STM32
 
 # Current Status
 
-Working, but incomplete. The firmware initializes the system clock to 48MHz driven by the HSI oscillator, then draws a simple menu to the OLED screen.
+Mostly working. The firmware initializes the system clock to 48MHz driven by the HSI oscillator, then draws a simple starting menu to the OLED screen.
 
-It sets up hardware interrupts for each of the 6 buttons - the 'A' button selects the test menu's start menu to start the game, and the 'Up' button returns to the menu from within the game. I'm hoping to add a 'pause' menu, though.
+It sets up hardware interrupts for each of the 6 buttons - the 'A' button selects the test menu's start menu to start the game, and the 'Up' button pauses/unpauses the game.
 
 The onboard LED blinks on and off each game 'tick', which causes the current block to drop if it can, and fix in place on the grid if not. A 'game over' happens when a brick gets fixed in place while part of it is above the top line. Rows are cleared if necessary when a brick is fixed in place.
 
-But there's no scoring, the game doesn't get faster as it progresses, there's no "next brick" display, etc. Just the basics.
+Scoring is simple; 1 line cleared = 1 point. The 'level' increments every 5 points up to level 10, and makes the core game tick slightly faster at each level. There is also a 'next block' display to the right of the grid which shows which shape will enter the grid next.
+
+The 'next brick' is selected through a sort of crude way to generate random numbers; a timer is started with a very fast counter speed at the beginning of the program, and its least significant bits are checked when a random number is needed. Since it isn't checked very often and the time between new bricks is inconsistent, it's good enough.
 
 Currently, only the STM32F051K8 and STM32F031K6 are supported, but I hope to add the STM32F303K8 as well if time permits.
 
