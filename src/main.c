@@ -4,6 +4,31 @@
  * Main program.
  */
 int main(void) {
+  // Initial clock setup.
+  #ifdef VVC_F0
+    // Reset the Flash 'Access Control Register', and
+    // then set 1 wait-state and enable the prefetch buffer.
+    FLASH->ACR &= ~(0x0000001F);
+    FLASH->ACR |=  (FLASH_ACR_LATENCY |
+                    FLASH_ACR_PRFTBE);
+    // Configure the PLL to (HSI / 2) * 12 = 48MHz.
+    // Use a PLLMUL of 0xA for *12, and keep PLLSRC at 0
+    // to use (HSI / PREDIV) as the core source. HSI = 8MHz.
+    RCC->CFGR  &= ~(RCC_CFGR_PLLMUL |
+                    RCC_CFGR_PLLSRC);
+    RCC->CFGR  |=  (RCC_CFGR_PLLSRC_HSI_DIV2 |
+                    RCC_CFGR_PLLMUL12);
+    // Turn the PLL on and wait for it to be ready.
+    RCC->CR    |=  (RCC_CR_PLLON);
+    while (!(RCC->CR & RCC_CR_PLLRDY)) {};
+    // Select the PLL as the system clock source.
+    RCC->CFGR  &= ~(RCC_CFGR_SW);
+    RCC->CFGR  |=  (RCC_CFGR_SW_PLL);
+    while (!(RCC->CFGR & RCC_CFGR_SWS_PLL)) {};
+  #elif VVC_F3
+    // TODO
+  #endif
+
   // Define starting values for global variables.
   uled_state = 0;
   game_state = GAME_STATE_MAIN_MENU;
