@@ -38,7 +38,8 @@ volatile uint8_t tetris_level;
 // Timer values for dropping the bricks faster
 // when the 'down' button is pressed.
 #define FAST_DROP_TIM_PRE     (2048)
-#define FAST_DROP_TIM_ARR     (4096)
+//#define FAST_DROP_TIM_ARR     (4096)
+#define FAST_DROP_TIM_ARR     (3584)
 
 // Macro definitions for the Tetris grid/bricks.
 // (Note: The brick values should not be changed; the
@@ -83,6 +84,8 @@ volatile unsigned char tetris_grid[10][20];
 // Store more information about the game state.
 volatile uint8_t should_tick;
 volatile uint8_t state_changed;
+volatile uint8_t fast_tick_timer_on;
+volatile uint8_t left_right_fast_tick;
 volatile uint16_t game_tick_prescaler;
 volatile uint16_t game_tick_period;
 // Store information about the current block.

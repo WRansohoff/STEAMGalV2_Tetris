@@ -17,8 +17,11 @@ inline void EXTI0_line_interrupt(void) {
   if (game_state == GAME_STATE_IN_GAME) {
     // Drop the block by one grid coordinate if able.
     should_tick = 1;
-    // Start the timer for continuing to drop bricks.
-    start_timer(TIM16, FAST_DROP_TIM_PRE, FAST_DROP_TIM_ARR, 1);
+    if (!fast_tick_timer_on) {
+      fast_tick_timer_on = 1;
+      // Start the timer for continuing to drop bricks.
+      start_timer(TIM16, FAST_DROP_TIM_PRE, FAST_DROP_TIM_ARR, 1);
+    }
   }
 }
 
@@ -29,6 +32,11 @@ inline void EXTI1_line_interrupt(void) {
     if (!check_brick_pos(cur_block_x+1, cur_block_y)) {
       cur_block_x += 1;
       state_changed = 1;
+      if (!fast_tick_timer_on) {
+        fast_tick_timer_on = 1;
+        // Start the timer for continuing to drop bricks.
+        start_timer(TIM16, FAST_DROP_TIM_PRE, FAST_DROP_TIM_ARR, 1);
+      }
     }
   }
 }
@@ -52,6 +60,11 @@ inline void EXTI6_line_interrupt(void) {
     if (!check_brick_pos(cur_block_x-1, cur_block_y)) {
       cur_block_x -= 1;
       state_changed = 1;
+      if (!fast_tick_timer_on) {
+        fast_tick_timer_on = 1;
+        // Start the timer for continuing to drop bricks.
+        start_timer(TIM16, FAST_DROP_TIM_PRE, FAST_DROP_TIM_ARR, 1);
+      }
     }
   }
 }
@@ -307,13 +320,36 @@ void TIM16_IRQ_handler(void) {
   // Handle a timer 'update' interrupt event
   if (TIM16->SR & TIM_SR_UIF) {
     TIM16->SR &= ~(TIM_SR_UIF);
-    if (game_state == GAME_STATE_IN_GAME) {
-      // Stop the timer if the 'Down' button is no longer pressed.
-      if (GPIOB->IDR & GPIO_IDR_0) {
-        stop_timer(TIM16);
+    // Stop the timer if no relevant buttons are pressed.
+    if ((GPIOB->IDR & GPIO_IDR_0) &&
+        (GPIOB->IDR & GPIO_IDR_1) &&
+        (GPIOA->IDR & GPIO_IDR_6)) {
+      fast_tick_timer_on = 0;
+      left_right_fast_tick = 0;
+      stop_timer(TIM16);
+    }
+    else if (game_state == GAME_STATE_IN_GAME) {
+      // If the game isn't paused, move the brick appropriately.
+      left_right_fast_tick += 1;
+      if (left_right_fast_tick >= 3) {
+        if (!(GPIOB->IDR & GPIO_IDR_1)) {
+          // Move the brick right, if possible.
+          if (!check_brick_pos(cur_block_x+1, cur_block_y)) {
+            cur_block_x += 1;
+            state_changed = 1;
+          }
+        }
+        if (!(GPIOA->IDR & GPIO_IDR_6)) {
+          // Move the brick left, if possible.
+          if (!check_brick_pos(cur_block_x-1, cur_block_y)) {
+            cur_block_x -= 1;
+            state_changed = 1;
+          }
+        }
+        left_right_fast_tick = 0;
       }
-      // Otherwise, drop the block by one grid coordinate if able.
-      else {
+      if (!(GPIOB->IDR & GPIO_IDR_0)) {
+        // Drop the brick if necessary.
         should_tick = 1;
       }
     }

@@ -767,6 +767,13 @@ void draw_tetris_game(void) {
  * 'Reset Game State' method, to start a new game.
  */
 void reset_game_state(void) {
+  // Reset global states.
+  should_tick = 0;
+  state_changed = 1;
+  fast_tick_timer_on = 0;
+  left_right_fast_tick = 0;
+  game_tick_prescaler = 1024;
+  game_tick_period = 46785;
   // Reset the 'current block' position.
   cur_block_x = 4;
   cur_block_y = -1;
@@ -898,12 +905,12 @@ void tetris_game_tick(void) {
         // Also increment the 'score' variable by 1.
         tetris_score += 1;
         // Increment the level every 10 points.
-        if (tetris_score % 5 == 0 && tetris_level < 20) {
+        if (tetris_score % 5 == 0 && tetris_level < 10) {
           tetris_level += 1;
           // When the level increments, make the game's main
           // 'tick' timer faster.
           stop_timer(TIM2);
-          game_tick_period = 46785 - (1024 * tetris_level);
+          game_tick_period = 46785 - (3072 * tetris_level);
           start_timer(TIM2, game_tick_prescaler,
                       game_tick_period, 1);
         }
